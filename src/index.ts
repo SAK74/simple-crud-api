@@ -1,6 +1,11 @@
 import { createServer } from "node:http";
 import "dotenv/config";
 import { serverListener } from "./handlers/coreHandler";
+import { randomUUID } from "crypto";
+// import { validate } from "uuid";
+
+// const myId = randomUUID();
+// console.log("validate: ", validate(""));
 
 const PORT = Number(process.env.PORT) || 4000;
 

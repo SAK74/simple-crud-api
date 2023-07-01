@@ -15,6 +15,15 @@ class UsersData {
   findUser(_id: string) {
     return this.users.find((user) => user.id === _id);
   }
+  deleteUser(_id: string) {
+    this.users.splice(this.findIdx(_id), 1);
+  }
+  changeUser(_id: string, user: UserType) {
+    this.users[this.findIdx(_id)] = user;
+  }
+  private findIdx(_id: string) {
+    return this.users.findIndex(({ id }) => id === _id);
+  }
 }
 
 export default new UsersData();

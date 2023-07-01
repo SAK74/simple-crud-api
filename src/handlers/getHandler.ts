@@ -1,7 +1,7 @@
 import { RequestListener } from "http";
-import data, { UserType } from "../data/users";
-import { handleError } from "../services/handleError";
+import data from "../data/users";
 import { getID } from "../services/getId";
+import { validateId } from "../services/validateId";
 
 export const getHandler: RequestListener = (req, resp) => {
   const id = getID(req.url);
@@ -10,17 +10,10 @@ export const getHandler: RequestListener = (req, resp) => {
       .writeHead(200, { "content-type": "application/json" })
       .end(JSON.stringify(data.users));
   } else {
-    if (!id) {
-      handleError(400, "invalid id", resp);
-      return;
-    }
-    let _user: UserType | undefined;
-    if ((_user = data.findUser(id))) {
+    validateId(id, resp, (_id, _user) => {
       resp
         .writeHead(200, { "content-type": "application/json" })
         .end(JSON.stringify(_user));
-    } else {
-      handleError(404, "user don't exist", resp);
-    }
+    });
   }
 };
