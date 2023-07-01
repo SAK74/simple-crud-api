@@ -1,9 +1,6 @@
 import { createServer } from "node:http";
-import { randomUUID } from "node:crypto";
 import "dotenv/config";
 import { serverListener } from "./handlers/coreHandler";
-
-console.log("first test", randomUUID());
 
 const PORT = Number(process.env.PORT) || 4000;
 

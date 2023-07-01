@@ -1,30 +1,32 @@
 import { UserType } from "data/users";
 import { RequestListener } from "http";
-import { parse } from "querystring";
+import users from "../data/users";
+import { randomUUID } from "crypto";
+import { handleError } from "../services/handleError";
 
-const FORM_URLENCODED = "application/x-www-form-urlencoded";
-const WRONG_CONTENT_TYPE =
-  'type content should be "application/x-www-form-urlencoded"';
+const WRONG_CONTENT_TYPE = 'type content should be "application/json"';
 const DOESNT_CONTAIN_REQ = "body doesn't contain required fields";
 
 export const postHandler: RequestListener = (req, res) => {
-  if (req.headers["content-type"] !== FORM_URLENCODED) {
-    res.writeHead(400, "wrong content type of request").end(WRONG_CONTENT_TYPE);
+  if (req.headers["content-type"] !== "application/json") {
+    handleError(400, WRONG_CONTENT_TYPE, res);
+    return;
   }
-  // console.log("from post handler", req.headers);
+
   let body = "";
   req.on("data", (chunk) => {
     body += chunk;
   });
   req.on("end", () => {
-    const bodyObj = parse(body) as unknown as Omit<UserType, "id">;
-    console.log("body: ", bodyObj);
+    const bodyObj = JSON.parse(body) as Omit<UserType, "id">;
     if (!bodyObj.age || !bodyObj.username || !bodyObj.hobbies) {
-      res.writeHead(400, DOESNT_CONTAIN_REQ).end(DOESNT_CONTAIN_REQ);
+      handleError(400, DOESNT_CONTAIN_REQ, res);
     } else {
-      res.writeHead(401, "test message");
-      res.end(JSON.stringify(bodyObj));
+      const addedUser: UserType = { ...bodyObj, id: randomUUID() };
+      users.addUser(addedUser);
+      res
+        .writeHead(201, { "content-type": "application/json" })
+        .end(JSON.stringify(addedUser));
     }
-    // res.end(JSON.stringify(bodyObj));
   });
 };
