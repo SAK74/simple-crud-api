@@ -5,5 +5,5 @@ export const handleError = (
   mess: string,
   resp: ServerResponse
 ) => {
-  resp.writeHead(code, mess, { "content-type": "plain/text" }).end(mess);
+  resp.writeHead(code, mess, { "content-type": "text/plain" }).end(mess);
 };

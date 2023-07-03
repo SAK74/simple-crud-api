@@ -4,11 +4,10 @@ export interface UserType {
   age: number;
   hobbies: string[];
 }
+export type UserWithoutId = Omit<UserType, "id">;
 
 class UsersData {
-  users: UserType[] = [
-    { id: "asd", username: "example", age: 12, hobbies: [] },
-  ];
+  users: UserType[] = [];
   addUser(user: UserType) {
     this.users.push(user);
   }
@@ -18,8 +17,8 @@ class UsersData {
   deleteUser(_id: string) {
     this.users.splice(this.findIdx(_id), 1);
   }
-  changeUser(_id: string, user: UserType) {
-    this.users[this.findIdx(_id)] = user;
+  changeUser(_id: string, user: UserWithoutId) {
+    this.users[this.findIdx(_id)] = { ...user, id: _id };
   }
   private findIdx(_id: string) {
     return this.users.findIndex(({ id }) => id === _id);
