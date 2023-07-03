@@ -7,7 +7,7 @@
 /bazel-out
 
 # dotenv environment variables file
-.env
+# .env
 
 # Node
 /node_modules
